@@ -15,3 +15,14 @@ def search_or_save_user(mdb, effective_user, message):
         }
         mdb.users.insert_one(user)
     return user
+
+def search_user_task(mdb, user, user_data):
+    mdb.user.update_one(
+        {'id': user['_id']},
+        {'$set': {'task': {'task_title': user_data['task_title'],
+                           'deadline_date': user_data['deadline_date'],
+                           'notification_date': user_data['notification_date']}
+                  }
+        }
+    )
+    return user
