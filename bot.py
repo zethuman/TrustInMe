@@ -3,7 +3,7 @@ import patterns
 import datetime
 import telegramcalendar
 import logging
-from mongodb import mdb, search_or_save_user, search_user_task
+from mongodb import mdb, search_or_save_user, search_user_task, list_of_tasks
 import logging
 from telegram import (InlineKeyboardButton, InlineKeyboardMarkup,
                       ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, ParseMode)
@@ -15,6 +15,7 @@ from telegram.ext import (CallbackQueryHandler, CommandHandler,
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log')
+
 
 def start(bot, update):
     user = search_or_save_user(mdb, update.effective_user, update.message)
@@ -38,9 +39,9 @@ def add_task(bot, update):
 
 def task_create(bot, update, user_data):
     user_data['task_title'] = update.message.text
-    user = search_or_save_user(mdb, update.effective_user, update.message)
-    task = search_user_task(mdb, user, user_data)
-    print(task)
+    # user = search_or_save_user(mdb, update.effective_user, update.message)
+    # task = search_user_task(mdb, user, user_data)
+    # print(task)
     reply_keyboard = [["Yes", "No"]]
     update.message.reply_text(
         "Does the task have the deadline?",
@@ -50,21 +51,28 @@ def task_create(bot, update, user_data):
     return ADD_DEADLINE
 
 
-def list_tasks(bot, update):
+def get_username(update):
+    return update.effective_user.username
+
+
+# def get_tasks_list(user):
+#     # tasks = Task.objects.filter(reporter=user)
+#     keyboard = [[InlineKeyboardButton(task.title, callback_data=task.id)]
+#                 for task in tasks]
+#     keyboard_markup = InlineKeyboardMarkup(keyboard)
+#     return keyboard_markup
+
+
+def list_tasks(bot, update, user_data):
+    user = update.message.from_user
     reply_markup = ReplyKeyboardRemove()
+    user = search_or_save_user(mdb, update.effective_user, update.message)
     message = update.message.reply_text(
-        "Getting tasks list ...", reply_markup=reply_markup
+        "Getting tasks...", reply_markup=reply_markup
     )
-    # message.reply_text(
-    #     "Choose a task to view:", reply_markup=get_tasks_list(user))
+    message.reply_text(
+         "Choose a task to view:", reply_markup=get_tasks_list(user))
     return TASK_VIEW
-
-
-def set_task(bot, update):
-    msg = 'Hmm... Ok, I get it. Do you need any deadline? (poiled by Rakhat)'
-    keyboard = [["Yes", "No"]]
-    update.message.reply_text(msg, reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
-    return ADD_DEADLINE
 
 
 def no_deadline(bot, update):
@@ -89,6 +97,7 @@ def deadline_handler(bot, update, user_data):
     selected, date = telegramcalendar.process_calendar_selection(bot, update)
 
     user_data['deadline_date'] = date
+    print(date)
     # task = user_data["task"]
     # task.due_date = date
     # task.save(update_fields=["due_date"])
@@ -157,6 +166,25 @@ def add_notification_date(bot, update, job_queue, user_data):
     return ConversationHandler.END
 
 
+def task_view(bot, update, user_data):
+    task_id = update.callback_query.data
+    # task = Task.objects.get(id=task_id)
+    reply_keyboard = [["Edit", "Delete"]]
+    user_data["task"] = task
+    bot.send_message(chat_id=update.callback_query.from_user.id,
+                     text=f"Task {task.title}\nDescription: "
+                     f"{task.description}\n"
+                     f"Due date: {task.due_date}\nNotification: "
+                     f"{task.notification}\n"
+                     f"Status: {task.status}",
+                     reply_markup=ReplyKeyboardMarkup(
+                         reply_keyboard,
+                         one_time_keyboard=True)
+                     )
+    return SELECT_ACTION
+
+
+
 # def inline_handler(bot,update):
 #     selected,date = telegramcalendar.process_calendar_selection(bot, update)
 #     if selected:
@@ -211,14 +239,13 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[
             CommandHandler("start", start),
-            CommandHandler("set", set_task),
             CommandHandler("help", help),
             CommandHandler("tutorial", tutorial)
         ],
         states={
             GET_COMMAND: [
                 RegexHandler("^Create Task$", add_task),
-                RegexHandler("^List All Tasks$", list_tasks),
+                RegexHandler("^List All Tasks$", list_tasks, pass_user_data=True),
             ],
             TASK_CREATE: [
                 MessageHandler(
@@ -260,6 +287,11 @@ def main():
                     add_notification_date,
                     pass_user_data=True,
                     pass_job_queue=True),
+            ],
+            TASK_VIEW: [
+                CallbackQueryHandler(
+                    task_view,
+                    pass_user_data=True)
             ],
         },
         fallbacks=[
