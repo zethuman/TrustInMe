@@ -315,7 +315,6 @@ def main():
             CommandHandler("start", start),
             CommandHandler("help", help),
             CommandHandler("tutorial", tutorial),
-            MessageHandler("^Restart$", start)
         ],
         states={
             GET_COMMAND: [
@@ -323,8 +322,7 @@ def main():
                 RegexHandler("^List All Tasks$", list_tasks, pass_user_data=True),
                 RegexHandler("^Help$", help),
                 RegexHandler("^Tutorial$", tutorial),
-                MessageHandler("Restart", start)
-                # RegexHandler("^Restart$", start),
+                RegexHandler("^Restart$", start),
             ],
             TASK_CREATE: [
                 MessageHandler(
