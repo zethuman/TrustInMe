@@ -314,7 +314,8 @@ def main():
         entry_points=[
             CommandHandler("start", start),
             CommandHandler("help", help),
-            CommandHandler("tutorial", tutorial)
+            CommandHandler("tutorial", tutorial),
+            MessageHandler("^Restart$", start)
         ],
         states={
             GET_COMMAND: [
@@ -322,7 +323,8 @@ def main():
                 RegexHandler("^List All Tasks$", list_tasks, pass_user_data=True),
                 RegexHandler("^Help$", help),
                 RegexHandler("^Tutorial$", tutorial),
-                RegexHandler("^Restart$", start),
+                MessageHandler("Restart", start)
+                # RegexHandler("^Restart$", start),
             ],
             TASK_CREATE: [
                 MessageHandler(
