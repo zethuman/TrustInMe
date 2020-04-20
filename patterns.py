@@ -1,14 +1,3 @@
-# start_text = ('\n\n' + 'Use the following commands to control me:\n\n'
-#                        '/new – create a new to-do list\n'
-#                        '/show – show current to-do list\n'
-#                        '/all – show all existing to-do lists\n\n'
-#                        '/help – show this help message\n'
-#                        '/tutorial – show tutorial\n'
-#                        '/settings – settings\n'
-#                        '@trustinmesupport – get a support\n'
-#                        '@trustinmenews – announcements, news, tips\n'
-#                        't.me/trustinmechat – chat for users')
-
 start_text = ('\n\n' + 'What would you like to do? I can:'
                        '\n\n1) Set tasks'
                        '\n2) Set deadlines'
