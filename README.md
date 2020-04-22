@@ -7,7 +7,7 @@ So many conversations, so little time to follow up. Telegram is one of the most 
 
 Introducing TrustInMe Telegram Reminders. A fast and easy way to create tasks & reminders straight from your ongoing conversations! Easily create tasks and get reminders in Telegram on any supported device. Create a task by sending a direct message to TrustInMe. Be reminded as soon as tasks are due, straight through Telegram. It’s easy, simple and effective!
 
-#Epic Stories + User Stories
+# Epic Stories + User Stories
 1. As a user of the messenger, I want to set myself the task to plan my worktime
     1.1 Update task
     1.2 Finish task
@@ -20,10 +20,10 @@ Introducing TrustInMe Telegram Reminders. A fast and easy way to create tasks & 
 6. As a messenger user I want to get help to get support, to know about announcements, news and tips, to entire to chat of users.
 7. As a messenger user I want to get a tutorial(youtube video) to know how to use this bot.
 
-#Platforms
+# Platforms
 1. MongoDB
 2. Flask
 3. Telegram Bot Api
 
-#Demo
+# Demo
 https://youtu.be/fCrqhvrhyhg
