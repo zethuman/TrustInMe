@@ -27,5 +27,5 @@ Introducing TrustInMe Telegram Reminders. A fast and easy way to create tasks & 
 
 
 # Demo
-Project demonstration in Telegram -- https://youtu.be/fCrqhvrhyhg
-Project demonstration in Postman -- https://youtu.be/PKwqb0VQqz8
+1. Project demonstration in Telegram -- https://youtu.be/fCrqhvrhyhg
+2. Project demonstration in Postman -- https://youtu.be/PKwqb0VQqz8
